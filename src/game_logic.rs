@@ -1,6 +1,9 @@
+use rand::seq::SliceRandom;
+
 use super::word_validation::Word;
-//use word_generator::{langs, *};
 use std::{fs::File, io::BufReader, env};
+
+static WORDS: &'static str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/wordle_lang.txt"));
 
 pub struct Game {
     secret_word: String,
@@ -37,9 +40,8 @@ impl Game {
     }
 
 }
-fn generate_word() -> String {
-    static WORDS: &'static str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/wordle_lang.txt"));
-    println!("{}",WORDS);
-    let reader = BufReader::new(WORDS);
-    generate_words(reader, 3, 1).unwrap()[0].to_owned()
+fn generate_word() -> String{
+    let words: Vec<&str> = WORDS.trim().split('\n').collect();
+    let mut rng = rand::thread_rng();
+    words.choose(&mut rng).unwrap().to_string()
 }
